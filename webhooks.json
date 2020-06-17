@@ -1,0 +1,10 @@
+{
+    "webhooks": [
+        {
+            "serverName": "Myke's Place",
+            "roleToMention": "StreamAnnouncement",
+            "url": "",
+            "creators": ["mykegreywolf"]
+        }
+    ]
+}
