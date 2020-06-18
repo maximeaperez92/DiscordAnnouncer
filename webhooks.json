@@ -2,7 +2,7 @@
     "webhooks": [
         {
             "serverName": "Myke's Place",
-            "roleToMention": "StreamAnnouncement",
+            "roleIdToMention": "617554125315506188",
             "url": "",
             "creators": ["mykegreywolf"]
         }

@@ -47,7 +47,7 @@ def main():
                                 requests.post(
                                     server["url"],
                                     {
-                                        "content": f"@{server['roleToMention']} {creator} has gone live on Picarto\nhttps://picarto.tv/{creator}"
+                                        "content": f"<@&{server['roleToMention']}> {creator} has gone live on Picarto\nhttps://picarto.tv/{creator}"
                                     },
                                     timeout=10,
                                 )
