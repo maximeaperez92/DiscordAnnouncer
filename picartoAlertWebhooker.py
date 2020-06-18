@@ -13,7 +13,7 @@ def main():
         error = False
         online_creators = []
 
-        print("Checking now...")
+        print("Checking Picarto now...")
         try:
             online_creators = [
                 creator["name"].lower()
@@ -25,42 +25,35 @@ def main():
                 )
             ]
         except:
-            print("Error communicating with picarto, retrying in 60 seconds.")
+            print("Error communicating with Picarto, retrying in 60 seconds.")
             sleep(60)
             continue
 
         # Iterate over all servers
         for server in webhooks:
-            if server["serverName"] not in creators_seen.keys():
-                creators_seen[server["serverName"]] = []
+            server_name = server["serverName"]
+            role_id = server["roleIdToMention"]
+
+            if server_name not in creators_seen.keys():
+                creators_seen[server_name] = []
 
             for creator in server["creators"]:
-                # If a creator is online *and* has not already been announced to
-                # the server, announce to the server.
-                # Otherwise do nothing, if a previously seen creator returns
-                # offline, flag them as offline so they'll be announced next
-                # time they come online.
-                if creator.lower() in online_creators:
-                    if creator not in creators_seen[server["serverName"]]:
-                        try:
-                            if server["roleToMention"]:
-                                requests.post(
-                                    server["url"],
-                                    {
-                                        "content": f"<@&{server['roleToMention']}> {creator} has gone live on Picarto\nhttps://picarto.tv/{creator}"
-                                    },
-                                    timeout=10,
-                                )
-                            else:
-                                requests.post(
-                                    server["url"],
-                                    {
-                                        "content": f"{creator} has gone live on Picarto\nhttps://picarto.tv/{creator}"
-                                    },
-                                    timeout=10,
-                                )
 
-                            creators_seen[server["serverName"]].append(creator)
+                creator_is_online = creator.lower() in online_creators
+                creator_has_been_announced = creator in creators_seen[server_name]
+
+                if creator_is_online:
+                    if not creator_has_been_announced:
+                        message = f"{creator} has gone live on Picarto\nhttps://picarto.tv/{creator}"
+                        try:
+                            if role_id:
+                                message = f"<@&{role_id}> " + message
+
+                            requests.post(
+                                server["url"], {"content": message}, timeout=10
+                            )
+
+                            creators_seen[server_name].append(creator)
                             print(f"{creator} now online.")
                         except:
                             error = True
@@ -68,8 +61,8 @@ def main():
                                 f"Couldn't reach Discord server {server['serverName']}. Retrying in 60 seconds."
                             )
                 else:
-                    if creator in creators_seen[server["serverName"]]:
-                        creators_seen[server["serverName"]].remove(creator)
+                    if creator_has_been_announced:
+                        creators_seen[server_name].remove(creator)
                         print("{creator} now offline.")
 
         if not error:
