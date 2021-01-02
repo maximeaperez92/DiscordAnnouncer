@@ -1,10 +1,10 @@
 {
     "webhooks": [
         {
-            "serverName": "Myke's Place",
-            "roleIdToMention": "617554125315506188",
+            "serverName": "Server name",
+            "roleIdToMention": "123456789",
             "url": "",
-            "creators": ["mykegreywolf"]
+            "creators": ["creator"]
         }
     ]
 }
